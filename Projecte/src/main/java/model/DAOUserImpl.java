@@ -7,16 +7,17 @@ package model;
 import connection.ConnectionDB;
 import interfaces.DAOUser;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import sun.net.www.content.text.plain;
 
 /**
  *
  * @author isard
  */
-public class DAOUserImpl extends ConnectionDB implements DAOUser{
+public class DAOUserImpl extends ConnectionDB implements DAOUser {
 
     @Override
-    public void register(User u) throws Exception { 
+    public void register(User u) throws Exception {
         try {
             this.connectDB();
             PreparedStatement st = this.connection.prepareStatement("INSERT INTO usuaris.usuaris (id, usuari, contrasenya, rol) VALUES(?,?,?,?)");
@@ -33,19 +34,30 @@ public class DAOUserImpl extends ConnectionDB implements DAOUser{
     //TODO
     @Override
     public void update(User u) throws Exception {
-throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     //TODO
     @Override
     public void delete(User u) throws Exception {
-throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     //TODO
     @Override
-    public void select(User u) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean select(String user, String password) throws Exception {
+        try {
+            this.connectDB();
+            PreparedStatement st = this.connection.prepareStatement("SELECT usuari, contrasenya FROM usuaris.usuaris WHERE usuari = ? AND contrasenya = ?");
+            st.setString(1, user);
+            st.setString(2, password);
+            ResultSet rs = st.executeQuery();
+            
+            return rs.next();
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
     
 }

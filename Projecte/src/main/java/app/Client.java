@@ -4,6 +4,8 @@
  */
 package app;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,27 +32,57 @@ public class Client {
             ObjectOutputStream outUser = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream inUser = new ObjectInputStream(socket.getInputStream()); 
             
-            User u = new User();
+            DataInputStream inData = new DataInputStream(socket.getInputStream());
+            DataOutputStream outData = new DataOutputStream(socket.getOutputStream());
             
-            System.out.println("ID:");
-            u.setId(sc.next());
-            System.out.println("NOM:");
-            u.setUsuari(sc.next());
-            System.out.println("PASS:");
-            u.setPassword(sc.next());
-            System.out.println("ROL:");
-            u.setType(sc.next());
             
-            outUser.writeObject(u);
+            String m = sc.next();
             
-            String message="";
             
-            while (!message.equals("exit")) {  
-                message = sc.next();
-                System.out.println("Informació enviada!");
+            switch (m) {
+                case "login":
+                    outData.writeUTF("login");
+
+                    
+                    String message="";
+
+                    
+                     while (!message.equals("exit")) {  
+                        message = sc.next();
+                        System.out.println("Informació enviada");
+                    }
+                     
+                    break;
+                case "register":
+                    outData.writeUTF("register");
+                    
+                    User u = new User();
+            
+                    System.out.println("ID:");
+                    u.setId(sc.next());
+                    System.out.println("NOM:");
+                    u.setUsuari(sc.next());
+                    System.out.println("PASS:");
+                    u.setPassword(sc.next());
+                    System.out.println("ROL:");
+                    u.setType(sc.next());
+
+                    outUser.writeObject(u);
+
+                    message="";
+
+                    System.out.println(inData.readUTF());
+
+
+                    while (!message.equals("exit")) {  
+                        message = sc.next();
+                        System.out.println("Informació enviada");
+                    }
+                    
+                    break;
+                default:
+                    throw new AssertionError();
             }
-            
-            System.out.println("Informació enviada");
 
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

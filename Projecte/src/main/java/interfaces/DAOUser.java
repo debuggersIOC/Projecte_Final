@@ -12,7 +12,7 @@ import model.User;
  */
 public interface DAOUser {
     
-    public void select(User u) throws Exception;
+    public boolean select(String user, String password) throws Exception;
     public void register(User u) throws Exception;
     public void update(User u) throws Exception;
     public void delete(User u) throws Exception;
