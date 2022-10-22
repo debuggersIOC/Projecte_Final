@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/credentials_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="50sp"
+    android:paddingTop="50sp"
+    android:paddingRight="50sp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <TextView
+        android:id="@+id/logIn_user_textView"
+        style="@style/LabelMediumText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin"
+        android:paddingTop="5dp"
+        android:paddingBottom="20dp"
+        android:text="User"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/logIn_userName_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_gray"
+        android:inputType="textNoSuggestions"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/Rating"
+        style="@style/LabelMediumText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin"
+        android:paddingTop="50dp"
+        android:paddingBottom="20dp"
+        android:text="Password"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        >
+
+        <EditText
+            android:id="@+id/logIn_password_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/c_gray"
+            android:inputType="text|textPassword"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/hide_password_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/hide_password_button"
+            android:layout_width="61dp"
+            android:layout_height="60dp"
+            android:layout_gravity="end"
+            android:backgroundTint="@color/c_clean_blue"
+            android:src="@drawable/eye"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        style="@style/LabelSmallText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin"
+        android:text="Recorda'm" />
+
+    <Button
+        android:id="@+id/log_in_button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/c_clean_blue"
+        android:text="iniciar sessió" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="27dp" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/sign_in_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:clickable="true"
+        android:minHeight="48dp"
+        android:paddingTop="15dp"
+        android:text="No tens un compte? Fes click aquí."
+        android:textColor="@color/c_clean_blue" />
+
+</LinearLayout>
