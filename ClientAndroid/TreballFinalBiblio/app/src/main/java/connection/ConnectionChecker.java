@@ -22,25 +22,26 @@ public class ConnectionChecker implements Callable {
     }
     public ConnectionChecker(Context context) {
         this.context = context;
+        host ="";
     }
 
 
     @Override
 
-    public String call() throws Exception {
-        if (host.equals("")){//COMPROVEM AMB LES OPCIONS PER DEFECTE
-            if (ConnectionUtils.itsOnline(context)) {
-                return "YOU CAN CONNECT";
+    public Boolean call() throws Exception {
+        if (host.equals("")){//COMPROVEM Si els camps son buits per colorcar LES OPCIONS PER DEFECTE
+            if (ConnectionManager.itsOnline(context)) {
+                return true;
             }
 
-            return "YOU CANNOT CONNECT";
+            return false;
 
         }else{//COMPROVEM AMB HOST Y PORT
-            if (ConnectionUtils.itsOnline(context, host, port)) {
-                return "YOU CAN CONNECT";
+            if (ConnectionManager.itsOnline(context, host, port)) {
+                return true;
             }
 
-            return "YOU CANNOT CONNECT";
+            return false;
 
         }
 

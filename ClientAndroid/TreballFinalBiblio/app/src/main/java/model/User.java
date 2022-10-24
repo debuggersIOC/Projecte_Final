@@ -1,18 +1,24 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package model;
 
 import java.io.Serializable;
 
-
+/**
+ * Classe usuari
+ * @author Gerard
+ */
 public class User implements Serializable{
 
+    private static final long serialVersionUID =1L;
     private String id;
     private String usuari;
     private String password;
     private String type;
 
-    public User(){
-
-    }
+    public User(){}
 
     public User(String id, String usuari, String password, String type) {
         this.id = id;
@@ -20,8 +26,6 @@ public class User implements Serializable{
         this.password = password;
         this.type = type;
     }
-
-    //GETTERS AND SETTERS
 
     public String getId() {
         return id;
@@ -54,4 +58,5 @@ public class User implements Serializable{
     public void setType(String type) {
         this.type = type;
     }
+
 }

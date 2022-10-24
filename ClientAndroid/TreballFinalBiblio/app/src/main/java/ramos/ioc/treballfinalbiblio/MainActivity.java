@@ -3,22 +3,18 @@ package ramos.ioc.treballfinalbiblio;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 
-import connection.ConnectionUtils;
+import connection.ConnectionManager;
 import model.LogInCredentials;
+import model.LogInKeys;
 import ramos.ioc.treballfinalbiblio.databinding.ActivityMainBinding;
 
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView signUpLink;
     private EditText passwordEditText;
     Intent signInIntent;
-    LogInCredentials logInCredentials;
+    LogInKeys logInKeys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,23 +58,32 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener mainActivityListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.d("CONNEXIONDEBUG", "You clicked the login button");
                 //LOGIN
                 if (view.getId() == loginButton.getId()) {
-                    logInCredentials = new LogInCredentials(userNameEditText.getText().toString(), passwordEditText.getText().toString() );
-                    if (logInCredentials.getPassword() != null && logInCredentials.getUsername() != null) {
+                    logInKeys = new LogInKeys(userNameEditText.getText().toString(), passwordEditText.getText().toString() );
+                    if (logInKeys.getPassword() != null && logInKeys.getUserName() != null) {
 
                         //Credencials de prova
-                        if (logInCredentials.getUsername().equals("test") && logInCredentials.getPassword().equals("test")) {
+                        if (logInKeys.getUserName().equals("test") && logInKeys.getPassword().equals("test")) {
                             toast.show();
+                        }else{
+                            //Credencials de veritat
+                            //TODO Login amb el servidor
+                            if (!logInKeys.getPassword().isEmpty()&&!logInKeys.getUserName().isEmpty()){
+                                //IMPLEMENTAR: connexió amb servidor
+                                String token;
+
+                                token = ConnectionManager.login(logInKeys);
+                                if (token==null){
+                                    token = "NOTOKEN";
+
+                                }
+                                Log.d("CONNEXIONDEBUG", token);
+
+                            }
                         }
 
-                        //Credencials de veritat
-                        //TODO Login amb el servidor
-                        if (/**connexioLogin()**/false){
-                            //IMPLEMENTAR: connexió amb servidor
-                            Log.d("TODOSTUFF", "IMPLEMENTAR LOGIN AMB EL SERVIDOR");
-                        }
                     }
                 }
 
@@ -120,57 +125,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-    /**
-    static public boolean isURLReachable(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
-            try {
-                URL url = new URL("http://google.com");   // Change to "http://google.com" for www  test.
-                HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-                urlc.setConnectTimeout(10 * 1000);          // 10 s.
-                urlc.connect();
-                if (urlc.getResponseCode() == 200) {        // 200 = "OK" code (http connection is fine).
-                    Log.wtf("Connection", "Success !");
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (MalformedURLException e1) {
-                return false;
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-     **/
-/**
-    public static boolean isHostReachable(String serverAddress, int serverTCPport, int timeoutMS){
-        boolean connected = false;
-        Socket socket;
-        try {
-            socket = new Socket();
-            SocketAddress socketAddress = new InetSocketAddress(serverAddress, serverTCPport);
-            socket.connect(socketAddress, timeoutMS);
-            if (socket.isConnected()) {
-                connected = true;
-                socket.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            socket = null;
-        }
-        return connected;
-    }
-
-    public boolean connexioLogin (){
-        return false;
-
-    **/
 
 }
 

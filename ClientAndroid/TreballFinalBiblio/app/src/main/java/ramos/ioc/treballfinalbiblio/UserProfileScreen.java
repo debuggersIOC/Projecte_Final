@@ -20,7 +20,6 @@ import ramos.ioc.treballfinalbiblio.databinding.ActivityUserProfileScreenBinding
 
 public class UserProfileScreen extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityUserProfileScreenBinding binding;
 
     private TextView userName;
