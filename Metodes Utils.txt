@@ -1,0 +1,53 @@
+     private static void registerUserFromJsonString(String stringUser, DataOutputStream outData) {
+
+        try {
+            
+            DAOUser daoUser = new DAOUserImpl();
+            JSONObject jsonUser = new JSONObject (stringUser);
+            User p = new User();
+            p.setId(jsonUser.getString("id"));
+            p.setUsuari(jsonUser.getString("usuari"));
+            p.setPassword(jsonUser.getString("password"));
+            p.setType(jsonUser.getString("type"));
+            System.out.println( p.getId() + p.getPassword() + p.getType() + p.getUsuari() );
+            
+                        
+            //daoUser.register(p);
+             
+            outData.writeUTF(p.getUsuari() + " afegida a la base de dades");
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+    }
+     
+     private static String userToJsonString(User user){
+         //User --> JSONObject --> String
+         //Tornem l'user en un objecte JSON
+         JSONObject jsonUser = new JSONObject();
+         try{
+         jsonUser.put("id", user.getId());
+         jsonUser.put("usuari", user.getUsuari());
+         jsonUser.put("password", user.getPassword());
+         jsonUser.put("type", user.getType());
+         }catch(Exception ex){
+             ex.printStackTrace();
+         }
+         //Tornem l'user a un String
+         String stringUser = jsonUser.toString();
+         
+         return stringUser;
+         
+     }
+     
+     private static LoginKeys jsonStringToLoginKeys (String string){
+         //String --> Json --> LoginKeys
+         
+         JSONObject json = new JSONObject (string);
+         System.out.println(json.getString("userName"));
+         System.out.println(json.getString("password"));
+         LoginKeys loginKeys = new LoginKeys(json.getString("userName"), json.getString("password"));
+         return loginKeys;
+     }
+     
