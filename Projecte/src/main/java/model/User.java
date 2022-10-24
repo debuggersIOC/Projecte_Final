@@ -7,19 +7,18 @@ package model;
 import java.io.Serializable;
 
 /**
- *
- * @author isard
+ * Classe usuari
+ * @author Gerard
  */
 public class User implements Serializable{
-    
+
+    private static final long serialVersionUID =1L;
     private String id;
     private String usuari;
     private String password;
     private String type;
-    
-    public User(){
-        
-    }
+
+    public User(){}
 
     public User(String id, String usuari, String password, String type) {
         this.id = id;
@@ -59,8 +58,5 @@ public class User implements Serializable{
     public void setType(String type) {
         this.type = type;
     }
-    
-    
-    
-    
+
 }

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Connection;
 
 /**
- *
+ *Classe que inicialitza la connexió del servidor amb la base de dades
  * @author Gerard
  */
 public class ConnectionDB {
