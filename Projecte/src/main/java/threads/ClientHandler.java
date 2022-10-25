@@ -4,19 +4,19 @@
  */
 package threads;
 
+import app.MainServer;
 import interfaces.DAOUser;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 import model.DAOUserImpl;
 import model.User;
 import org.json.JSONObject;
-import codes.Codes;
+import java.util.HashMap;
 
 /**
- *
+ * Classe fil que gestiona els usuaris conectats.
  * @author Gerard
  */
 public class ClientHandler extends Thread {
@@ -24,14 +24,15 @@ public class ClientHandler extends Thread {
     private Socket client;
     private PrintWriter outData;
     private Scanner inData;
-    private Codes codes;
+    private MainServer server = new MainServer();
+    private HashMap<String, User> loggedUsers = new HashMap<>();
 
     public ClientHandler(Socket client) {
         try {
             this.client = client;
             this.inData = new Scanner(client.getInputStream());
             this.outData = new PrintWriter(client.getOutputStream(), true);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.getMessage();
         }
     }
@@ -41,7 +42,6 @@ public class ClientHandler extends Thread {
      */
     @Override
     public void run() {
-
         String request;
         try {
             /**
@@ -53,7 +53,6 @@ public class ClientHandler extends Thread {
              */
 
             outData.println("Benvingut al servidor: Escull 'login' o 'register'");
-
             while (inData.hasNext()) {
                 request = inData.nextLine();
                 switch (request) {
@@ -61,7 +60,8 @@ public class ClientHandler extends Thread {
                         System.out.println("Login");
                         try {
                             String userToLogin = inData.nextLine();
-                            loginUser(userToLogin, outData);
+                            User loggedUser = loginUser(userToLogin, outData);
+                            server.setLoggedUser(loggedUser.getId(), loggedUser);
                         } catch (Exception e) {
                             outData.println("1_2");
                         }
@@ -74,13 +74,23 @@ public class ClientHandler extends Thread {
                         } catch (Exception e) {
                             outData.println("2_2");
                         }
-
+                        break;
+                    case "logout":
+                        try {
+                            System.out.println("Un usuari es vol deslogejar");
+                            outData.println("3_1");
+                        } catch (Exception e) {
+                            outData.println("3_2");
+                        }finally{
+                            client.close();
+                        }
                         break;
                     default:
+                        System.out.println("No s'ha enviat una petició de 'login' o 'register'");
                         throw new AssertionError();
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.getMessage();
         } finally {
             outData.close();
@@ -90,7 +100,7 @@ public class ClientHandler extends Thread {
     /**
      * Es registra un nou usuari a la BBDD
      *
-     * @param stringUser l'objecte que ve creat des del client
+     * @param stringUser l'objecte que ve creat des del client en format JSONstring
      * @param outData la resposta al client
      * @throws IOException en cas de que un usuari ja estigui registrat amb
      * aquella ID
@@ -121,9 +131,8 @@ public class ClientHandler extends Thread {
      * S'inicia una petició per tal de fer un login a l'aplicació
      *
      * @param user l'usuari que vol fer login (juntament amb el nom i la
-     * contrasenya)
+     * contrasenya) que venen en format JSONstring
      * @param dataOut la resposta que se li envia al client
-     * @param outUser l'objecte Usuari que se li envia al client
      * @return l'usuari que s'ha volgut fer login
      * @throws Exception
      */

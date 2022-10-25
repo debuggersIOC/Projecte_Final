@@ -8,29 +8,45 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import model.User;
 
 import threads.ClientHandler;
 
 /**
  * Clase principal amb la qual s'inicilitza el servidor que esperarà als
  * clients.
+ * Conté un HashMap on s'emagatzemen tots els usuaris conectats.
  *
  * @author Gerard
  */
 public class MainServer {
 
-    private static ArrayList<ClientHandler> loggedUsers = new ArrayList<>();
+    private static HashMap<String, User> loggedUsers = new HashMap<>();
+    
+    public MainServer(){
+        MainServer.loggedUsers = new HashMap<>();
+    }
+
+    public User getLoggedUser(String key){
+        return loggedUsers.get(key);
+    }
+    
+    public HashMap<String, User> getLoggedUsers(){
+        return loggedUsers;
+    }
+
+    public void setLoggedUser(String s, User u) {
+        loggedUsers.put(s, u);
+    }
 
     public static void main(String[] args) {
 
         try {
-
             //Es crea el ServerSocket del servidor al port 8888
             ServerSocket server = new ServerSocket(8888);
             System.out.println("[SERVIDOR INICIAT]");
-
             while (true) {
-
                 //Espera a que es connecti un usuari i llavors accepta la petició              
                 System.out.println("Esperant usuari...");
                 Socket socket = server.accept();
@@ -38,10 +54,11 @@ public class MainServer {
 
                 ClientHandler clientThread = new ClientHandler(socket);
                 clientThread.start();
-                loggedUsers.add(clientThread);
             }
         } catch (IOException ex) {
             ex.getMessage();
         }
     }
+    
+    
 }

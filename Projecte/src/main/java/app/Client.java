@@ -41,8 +41,20 @@ public class Client {
                     outData.println("{\"usuari\": \"Gerard\", \"password\":\"1234\"}");
                     System.out.println(inData.nextLine());
                     String message = "";
+                    
                     while (!message.equals("exit")) {
                         message = sc.next();
+                        outData.println(message);
+                        if(message.equals("logout")){
+                            try{
+                        System.out.println("es vol fer logout");
+                    }catch(Exception e){
+                        e.getMessage();
+                    }finally{
+                        socket.close();
+                        System.exit(0);
+                    }
+                        }
                         System.out.println("Informació enviada");
                     }
                     break;
@@ -59,6 +71,16 @@ public class Client {
                     while (!message.equals("exit")) {
                         message = sc.next();
                         System.out.println("Informació enviada");
+                    }
+                    break;
+                    
+                case "logout":
+                    try{
+                        System.out.println("es vol fer logout");
+                    }catch(Exception e){
+                        e.getMessage();
+                    }finally{
+                        socket.close();
                     }
                     break;
                 default:
