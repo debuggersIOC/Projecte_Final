@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -27,6 +28,7 @@ import model.User;
  * Aquesta classe contè tots els metodes i atributs relacionats amb la connexió amb el servidor.
  */
 public class ConnectionManager {
+    final static User currentUser = null;
     final static String KEYWORD_LOGIN = "login"; // Paraula clau comunicar al servidor que es farà login.
     final static String KEYWORD_REGISTER = "register"; // Paraula clau per comunicar al servidor que es vol enregistrar un usuari.
 
@@ -36,8 +38,8 @@ public class ConnectionManager {
     public static final int GOOGLE_PORT = 53;
 
     //ip i port del servidor al que ens connectarem
-    public static final String SERVER_IP = "10.0.2.2";
-    public static final int SERVER_PORT = 21;
+    public static final String SERVER_IP = "10.0.2.2";//"169.254.224.147";
+    public static final int SERVER_PORT = 8888;//"8.8.8.8";
     private static final int SOCKET_TIMEOUT = 2000;
 
     public static Socket socket;
@@ -198,6 +200,7 @@ public class ConnectionManager {
                     //Instancia del output Stream
                     Log.d("CONNECTIONDEBUG", "creat ObjectOutputStream");
                     outData = new DataOutputStream(socket.getOutputStream());
+                    PrintWriter writer = new PrintWriter(outData, true);
                     outData.flush();
                     Log.d("CONNECTIONDEBUG", "creat DataOutputStream");
 
@@ -207,23 +210,24 @@ public class ConnectionManager {
                     //Escriu paraula clau
                     //writer.write(KEYWORD_REGISTER);
 
-                    outData.writeUTF(KEYWORD_REGISTER);
-                    outData.flush();
+                    writer.println(KEYWORD_REGISTER);
+                    writer.flush();
                     Log.d("CONNECTIONDEBUG", "WriteUTF");
 
                     JSONObject jsonObject = new JSONObject();
                     String jsonString;
                     try {
-                        jsonObject.put("id", " ASD"/*user.getId()*/);
-                        jsonObject.put("usuari", "ASD" /*user.getUsuari()*/);
-                        jsonObject.put("password", "ASD"/*user.getPassword()*/);
-                        jsonObject.put("type", "ASD" /*user.getType()*/);
+                        jsonObject.put("id", user.getId());
+                        jsonObject.put("usuari", user.getUsuari());
+                        jsonObject.put("password",user.getPassword());
+                        jsonObject.put("type", user.getType());
                     } catch (JSONException e) {
                         e.printStackTrace();
 
                     }
                     jsonString = jsonObject.toString();
-                    outData.writeUTF(jsonString);
+                    //outData.writeUTF(jsonString);
+                    writer.println(jsonString);
 
 
                     Log.d("CONNECTIONDEBUG", "writeUser");

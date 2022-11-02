@@ -9,6 +9,8 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 import JSONUtils.JSONParser;
@@ -18,35 +20,53 @@ import model.User;
 public class LoginCallable implements Callable {
 
     public LoginCallable(LogInKeys logK) {
-        this.logK = logK;
+        mlogK = logK;
     }
 
-    LogInKeys logK;
+    LogInKeys mlogK;
 
-
+    /**
+     *
+     * @return returns the user information of the login. Null if the login failed.
+     * @throws Exception
+     */
     @Override
     public Object call() throws Exception {
         ConnectionManager.connect();
 
         DataOutputStream out= new DataOutputStream (ConnectionManager.socket.getOutputStream());
         out.flush();
+        PrintWriter writer = new PrintWriter(out, true);
+
         DataInputStream in = new DataInputStream (ConnectionManager.socket.getInputStream());
+        Scanner scanner = new Scanner (in);
+
+
         //Enviem paraula de request
 
         Log.d("CONNECTIONDEBUG", "LOGIN: creat DataOutputStream");
-        out.writeUTF(ConnectionManager.KEYWORD_LOGIN);
-        out.flush();
-        Log.d("CONNECTIONDEBUG", "LOGIN:WriteUTF");
+        writer.println(ConnectionManager.KEYWORD_LOGIN);
+
+        Log.d("CONNECTIONDEBUG", "LOGIN:print line");
 
         //Enviem les claus de login
-        String string= JSONParser.logInKeysToJsonString(logK);
-        out.writeUTF(string);
+        String string= JSONParser.logInKeysToJsonString(mlogK);
+        writer.println(string);
 
-        Log.d("CONNECTIONDEBUG", "LOGIN:WriteUTFKEYS");
+        Log.d("CONNECTIONDEBUG", "LOGIN:WriteUTFKEYS" + string);
 
         //Rebem el token
 
-        String token = in.readUTF();
+        String token;
+        if (scanner.hasNext()){
+            token = scanner.nextLine();
+            Log.d("CONNECTIONDEBUG", "LOGIN:token" + token);
+        }
+        else{
+            token= null;
+
+        }
+
 
         return token;
 

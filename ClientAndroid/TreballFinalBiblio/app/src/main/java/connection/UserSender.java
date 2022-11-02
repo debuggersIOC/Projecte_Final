@@ -8,8 +8,8 @@ public class UserSender implements Runnable {
 
     User mUser;
 
-    public UserSender(User mUserm) {
-        this.mUser = mUser;
+    public UserSender(User user) {
+        mUser = user;
     }
 
     @Override
@@ -25,8 +25,8 @@ public class UserSender implements Runnable {
         return mUser;
     }
 
-    public void setUser(User mUser) {
-        this.mUser = mUser;
+    public void setUser(User user) {
+        mUser = user;
     }
 }
 

@@ -12,6 +12,7 @@ import android.view.View;
 import connection.ConnectionManager;
 import model.LogInCredentials;
 import model.LogInKeys;
+import model.User;
 import ramos.ioc.treballfinalbiblio.databinding.ActivityMainBinding;
 
 import android.view.Menu;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     Intent signInIntent;
     LogInKeys logInKeys;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        userNameEditText = binding.content.logInUserNameEditText;
+        userNameEditText = binding.content.logInUserEditText;
         hideButton = binding.content.hidePasswordButton;
         loginButton = binding.content.logInButton;
         passwordEditText = binding.content.logInPasswordEditText;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         signInIntent = new Intent(this, SignInActivity.class);
         Toast toast = Toast.makeText(this, "Inici de sessió activat!", Toast.LENGTH_SHORT);
+        Toast loginErrorToast = Toast.makeText(this, "L'usuari no es troba a la BD", Toast.LENGTH_SHORT);
 
         //ASYNC TASK LOADER
 
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
                         //Credencials de prova
                         if (logInKeys.getUserName().equals("test") && logInKeys.getPassword().equals("test")) {
                             toast.show();
+                            Intent intentUserProfile = new Intent(MainActivity.this, UserProfileScreen.class);
+                            intentUserProfile.putExtra("userProfile", new User("Test", "test", "test", "0" ));
+                            startActivity(intentUserProfile);
                         }else{
                             //Credencials de veritat
                             //TODO Login amb el servidor
@@ -77,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
                                 token = ConnectionManager.login(logInKeys);
                                 if (token==null){
                                     token = "NOTOKEN";
+                                    loginErrorToast.show();
+
+                                }else{
+                                    Intent intentUserProfile = new Intent (MainActivity.this, UserProfileScreen.class);
+                                    intentUserProfile.putExtra("userProfile", new User("Test", "test", "test", "0" ));
+                                    startActivity(intentUserProfile);
 
                                 }
                                 Log.d("CONNEXIONDEBUG", token);

@@ -12,7 +12,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <TextView
-        android:id="@+id/logIn_user_textView"
+        android:id="@+id/logIn_Title_textView"
         style="@style/LabelMediumText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,8 +23,20 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/test_info_textView"
+        style="@style/LabelMediumText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="Escriu test en user i en password per fer accedir al usuari de prova."
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
     <EditText
-        android:id="@+id/logIn_userName_editText"
+        android:id="@+id/logIn_user_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/c_gray"
@@ -34,7 +46,7 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/Rating"
+        android:id="@+id/logIn_password_textView"
         style="@style/LabelMediumText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

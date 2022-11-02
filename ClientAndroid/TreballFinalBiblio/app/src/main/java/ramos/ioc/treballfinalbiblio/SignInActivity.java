@@ -11,15 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import connection.ConnectionChecker;
 import connection.ConnectionManager;
@@ -66,21 +60,17 @@ public class SignInActivity extends AppCompatActivity {
         loginLink = findViewById(R.id.login_link_textView);
         signUpButton = findViewById(R.id.sign_up_button);
 
-        userNameEditText = findViewById(R.id.logIn_userName_editText);
-        passwordEditText = findViewById(R.id.logIn_password_editText);
-        repeatPasswordEditText = findViewById(R.id.logIn_passwordRepeat_editText);
-        idEditText = findViewById(R.id.logIn_id_editText);
+        userNameEditText = findViewById(R.id.signUp_UserName_editText);
+        passwordEditText = findViewById(R.id.signUp_password_editText);
+        repeatPasswordEditText = findViewById(R.id.signUp_passwordRepeat_editText);
+        idEditText = findViewById(R.id.signUp_id_editText);
         errorMessageTextView = findViewById(R.id.error_repeatPassword_textView);
-
-        //TODO CAPTA ELS TEXTS VIEW : ESBORRAR MES TARD
-        ipProvaEditText = findViewById(R.id.test_ip_editText);
-        portProvaEditText = findViewById(R.id.test_port_editText);
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        Intent intentUserProfile = new Intent(this, UserProfileScreen.class);
         //Aquesta flag fa que la activity neteji totes les activities del mateix tipus en el stack.
+
+
 
 
         View.OnClickListener listenerSignInActivity = new View.OnClickListener() {
@@ -112,13 +102,15 @@ public class SignInActivity extends AppCompatActivity {
                             String userType = "0";
 
                             newUser = new User(userIdCredential, userNameCredential, userPasswordCredential, userType);
-                            Log.d("CONNECTIONDEBUG", newUser.getId());
+                            Log.d("CONNECTIONDEBUG", newUser.getId() + newUser.getPassword() + newUser.getUsuari() + newUser.getType());
 
                             //COMPTE DE PROVA. User: Test, Password: Test - Porta a un profile "fals" de mostra.
 
                             if (newUser.getUsuari().equals("test") && newUser.getPassword().equals("test")) {
                                 //Creem un intent afegint de dades el new user
                                 //TODO CANVIAR KEY PER NOM MILLOR
+                                Intent intentUserProfile = new Intent(SignInActivity.this, UserProfileScreen.class);
+
                                 intentUserProfile.putExtra("userProfile", newUser);
                                 startActivity(intentUserProfile);
 
