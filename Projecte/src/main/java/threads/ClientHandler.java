@@ -9,11 +9,15 @@ import interfaces.DAOUser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 import model.DAOUserImpl;
 import model.User;
 import org.json.JSONObject;
 import java.util.HashMap;
+import java.util.List;
+import model.Book;
+import org.json.JSONArray;
 
 /**
  * Classe fil que gestiona els usuaris conectats.
@@ -26,6 +30,7 @@ public class ClientHandler extends Thread {
     private Scanner inData;
     private MainServer server = new MainServer();
     private HashMap<String, User> loggedUsers = new HashMap<>();
+    List<User> myList = new ArrayList<>();
 
     public ClientHandler(Socket client) {
         try {
@@ -42,6 +47,14 @@ public class ClientHandler extends Thread {
      */
     @Override
     public void run() {
+        
+        User u1 = new User("111", "Test", "1234","rol", 1.5f, "Gerard", "Pérez", "invent", "1234324", "Carrer 1", "Martorell", 98670);
+        
+        myList.add(u1);
+        JSONArray jsonArray = new JSONArray(myList);
+        
+        System.out.println(jsonArray);
+        
         String request;
         try {
             /**
@@ -108,7 +121,7 @@ public class ClientHandler extends Thread {
     private static void registerUserFromJsonString(String stringUser, PrintWriter outData) {
 
         try {
-
+            
             DAOUser daoUser = new DAOUserImpl();
             JSONObject jsonUser = new JSONObject(stringUser);
 
