@@ -211,12 +211,12 @@ public class DAOUserImpl extends ConnectionDB implements DAOUser {
     }
 
     @Override
-    public List<User> selectUsersByAssessment(String valoracio) throws Exception {
+    public List<User> selectUsersByAssessment(Float valoracio) throws Exception {
         try {
             this.connectDB();
             List<User> userList = new ArrayList<>();
             PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM usuaris.usuaris WHERE valoracio = ?");
-            ps.setString(1, valoracio);
+            ps.setFloat(1, valoracio);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 userList.add(selectUsers(rs));

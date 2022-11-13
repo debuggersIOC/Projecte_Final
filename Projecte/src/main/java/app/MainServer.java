@@ -39,6 +39,10 @@ public class MainServer {
     public void setLoggedUser(String s, User u) {
         loggedUsers.put(s, u);
     }
+    
+    public void logoutUser(String s){
+        loggedUsers.remove(s);
+    }
 
     public static void main(String[] args) {
 

@@ -83,7 +83,7 @@ public interface DAOUser {
      * @return un llistat d'usuaris
      * @throws Exception
      */
-    public List<User> selectUsersByAssessment(String valoracio) throws Exception;
+    public List<User> selectUsersByAssessment(Float valoracio) throws Exception;
 
     /**
      * Es cerca a la BBDD un usuari
