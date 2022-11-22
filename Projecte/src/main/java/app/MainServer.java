@@ -7,7 +7,6 @@ package app;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import model.User;
 
@@ -15,32 +14,31 @@ import threads.ClientHandler;
 
 /**
  * Clase principal amb la qual s'inicilitza el servidor que esperarà als
- * clients.
- * Conté un HashMap on s'emagatzemen tots els usuaris conectats.
+ * clients. Conté un HashMap on s'emagatzemen tots els usuaris conectats.
  *
  * @author Gerard
  */
 public class MainServer {
 
     private static HashMap<String, User> loggedUsers = new HashMap<>();
-    
-    public MainServer(){
+
+    public MainServer() {
         MainServer.loggedUsers = new HashMap<>();
     }
 
-    public User getLoggedUser(String key){
+    public User getLoggedUser(String key) {
         return loggedUsers.get(key);
     }
-    
-    public HashMap<String, User> getLoggedUsers(){
+
+    public HashMap<String, User> getLoggedUsers() {
         return loggedUsers;
     }
 
     public void setLoggedUser(String s, User u) {
         loggedUsers.put(s, u);
     }
-    
-    public void logoutUser(String s){
+
+    public void logoutUser(String s) {
         loggedUsers.remove(s);
     }
 
@@ -63,6 +61,5 @@ public class MainServer {
             ex.getMessage();
         }
     }
-    
-    
+
 }

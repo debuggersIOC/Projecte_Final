@@ -7,11 +7,12 @@ package model;
 import java.io.Serializable;
 
 /**
+ * Classe llibre
  *
  * @author Gerard
  */
 public class Book implements Serializable {
-    
+
     private int id;
     private String titol;
     private String autor;
@@ -98,7 +99,5 @@ public class Book implements Serializable {
     public void setDisponibilitat(String disponibilitat) {
         this.disponibilitat = disponibilitat;
     }
-    
-    
-    
+
 }

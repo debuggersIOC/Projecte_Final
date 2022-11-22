@@ -35,7 +35,7 @@ public class DAOBookImpl extends ConnectionDB implements DAOBook {
             b.setTitol(rs.getString("titol"));
             b.setAutor(rs.getString("autor"));
             b.setISBN(rs.getString("isbn"));
-            b.setAny(rs.getInt("any"));
+            b.setAny(rs.getInt("year"));
             b.setGenere(rs.getString("genere"));
             b.setEditorial(rs.getString("editorial"));
             b.setDisponibilitat(rs.getString("disponibilitat"));
@@ -44,6 +44,29 @@ public class DAOBookImpl extends ConnectionDB implements DAOBook {
 
         } catch (SQLException e) {
             System.out.println("No s'ha trobat cap llibre");
+            throw e;
+        }
+    }
+    
+    /**
+     * Selecciona un llibre mitjançant el seu ID
+     * @param id identificador del llibre
+     * @return el llibre trobat
+     * @throws Exception 
+     */
+    public Book selectID(int id) throws Exception{
+        try {
+            this.connectDB();
+            Book bookList = new Book();
+            PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM llibres.llibres WHERE id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                bookList = select(rs);
+            }
+            return bookList;
+        } catch (Exception e) {
+            System.out.println("No s'ha trobat cap llibre amb aquest ISBN");
             throw e;
         }
     }
@@ -131,12 +154,12 @@ public class DAOBookImpl extends ConnectionDB implements DAOBook {
      * @throws Exception
      */
     @Override
-    public List<Book> selectBooksByYear(String any) throws Exception {
+    public List<Book> selectBooksByYear(int any) throws Exception {
         try {
             this.connectDB();
             List<Book> bookList = new ArrayList<>();
-            PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM llibres.llibres WHERE any = ?");
-            ps.setString(1, any);
+            PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM llibres.llibres WHERE year = ?");
+            ps.setInt(1, any);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 bookList.add(select(rs));
@@ -183,7 +206,7 @@ public class DAOBookImpl extends ConnectionDB implements DAOBook {
     public void insert(Book book) throws Exception {
         try {
             this.connectDB();
-            PreparedStatement st = this.connection.prepareStatement("INSERT INTO llibres.llibres (id, titol, autor, isbn, any, genere, editorial, disponibilitat) VALUES(?,?,?,?,?,?,?,?)");
+            PreparedStatement st = this.connection.prepareStatement("INSERT INTO llibres.llibres (id, titol, autor, isbn, year, genere, editorial, disponibilitat) VALUES(?,?,?,?,?,?,?,?)");
             st.setInt(1, book.getId());
             st.setString(2, book.getTitol());
             st.setString(3, book.getAutor());
@@ -209,7 +232,7 @@ public class DAOBookImpl extends ConnectionDB implements DAOBook {
     public void update(Book book) throws Exception {
         try {
             this.connectDB();
-            PreparedStatement st = this.connection.prepareStatement("UPDATE llibres.llibres SET title = ?, autor = ?, isbn = ?, any = ?, genere = ?, editorial = ?, disponibilitat = ? WHERE id = ?");
+            PreparedStatement st = this.connection.prepareStatement("UPDATE llibres.llibres SET titol = ?, autor = ?, isbn = ?, year = ?, genere = ?, editorial = ?, disponibilitat = ? WHERE id = ?");
             st.setString(1, book.getTitol());
             st.setString(2, book.getAutor());
             st.setString(3, book.getISBN());

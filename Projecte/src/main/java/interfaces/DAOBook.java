@@ -22,6 +22,14 @@ public interface DAOBook {
      * @throws Exception
      */
     public Book select(ResultSet rs) throws Exception;
+    
+    /**
+     * Es cerca un llibre a la BBDD mitjançant el seu ID
+     * @param id identificador del llibre
+     * @return el llibre trobat
+     * @throws Exception 
+     */
+    public Book selectID(int id) throws Exception;
 
     /**
      * Seleccionar tots els llibres segons el titol
@@ -57,7 +65,7 @@ public interface DAOBook {
      * @return Un llistat de tots els llibres segons l'any
      * @throws Exception
      */
-    public List<Book> selectBooksByYear(String any) throws Exception;
+    public List<Book> selectBooksByYear(int any) throws Exception;
 
     /**
      * Seleccionar tots els llibres segons el genere

@@ -51,11 +51,10 @@ public class ClientHandler extends Thread {
         String request;
         try {
             /**
-             * Depenent la petició que entri del client, es fa un login o un
-             * registre al servidor
+             * Depenent la petició que entri del client es farà una operació.
              *
              * @param request llegeix la petició del servidor
-             * @throws AssertionError() en cas de que no s'envii cap petició
+             * @throws AssertionError() en cas de que no s'envii cap petició correcte
              */
 
             outData.println("Benvingut al servidor: ");
@@ -139,7 +138,7 @@ public class ClientHandler extends Thread {
                         System.out.println("Es vol donar d'alta un llibre");
                         try {
                             String jsonObject = inData.nextLine();
-                            insertBook(jsonObject, outData);
+                            insertBook("{\"id\": \"7897\", \"usuari\": \"Gerard\", \"password\":\"1234\", \"type\":\"client\"}", outData);
                         } catch (Exception e) {
                             outData.println("10_2");
                         }
@@ -210,7 +209,7 @@ public class ClientHandler extends Thread {
                         System.out.println("Es volen seleccionar llibres segons l'any");
                         try {
                             String any = inData.nextLine();
-                            selectBooksByYear(any, outData);
+                            selectBooksByYear(Integer.parseInt(any), outData);
                         } catch (Exception e) {
                             outData.println("18_2");
                         }
@@ -396,6 +395,7 @@ public class ClientHandler extends Thread {
 
             JSONArray usersByUsername = new JSONArray(daoUser.selectUsersByUsername(usuari));
 
+            System.out.println(usersByUsername);
             outData.println("7_1");
             outData.println(usersByUsername);
 
@@ -452,6 +452,11 @@ public class ClientHandler extends Thread {
     
     //Metodes per als llibres
     
+    /**
+     * Insereix un llibre a la BBDD
+     * @param stringBook un string JSON que conté l'objecte del llibre
+     * @param outData la resposta al client
+     */
     private static void insertBook(String stringBook, PrintWriter outData){
         
         try {
@@ -479,6 +484,11 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Modifica un llibre a la BBDD
+     * @param stringBook un string JSON que conté l'objecte del llibre
+     * @param outData la resposta al client
+     */
     private static void updateBook(String stringBook, PrintWriter outData){
         
         try {
@@ -506,6 +516,11 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Elimina un llibre a la BBDD
+     * @param stringBook un string JSON que conté l'objecte del llibre
+     * @param outData la resposta al client
+     */
     private static void deleteBook(String stringBook, PrintWriter outData){
         
         try {
@@ -533,6 +548,10 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Selecciona tots els llibres de la BBDD
+     * @param outData la reposta al client i un JSONArray en format string
+     */
     private static void selectAllBooks(PrintWriter outData) {
 
         try {
@@ -548,6 +567,11 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Selecciona tots els llibres per titol de la BBDD
+     * @param titol el titol del llibre
+     * @param outData la reposta al client i un JSONArray en format string
+     */
     private static void selectBooksByTitle(String titol, PrintWriter outData) {
 
         try {
@@ -563,6 +587,11 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Selecciona tots els llibres de la BBDD per autor
+     * @param autor el nom de l'autor
+     * @param outData  la resposta al client i un JSONArray en format string
+     */
     private static void selectBooksByAuthor(String autor, PrintWriter outData) {
 
         try {
@@ -578,6 +607,11 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Selecciona tots els llibres de la BBDD per ISBN
+     * @param ISBN codi ISBN
+     * @param outData  la resposta al client i un JSONArray en format string
+     */
     private static void selectBooksByISBN(String ISBN, PrintWriter outData) {
 
         try {
@@ -593,6 +627,11 @@ public class ClientHandler extends Thread {
         }
     }
     
+    /**
+     * Selecciona tots els llibres de la BBDD per genere
+     * @param genere el tipus de genere
+     * @param outData  la resposta al client i un JSONArray en format string
+     */
     private static void selectBooksByGenere(String genere, PrintWriter outData) {
 
         try {
@@ -608,7 +647,12 @@ public class ClientHandler extends Thread {
         }
     }
     
-    private static void selectBooksByYear(String any, PrintWriter outData) {
+    /**
+     * Selecciona tots els llibres de la BBDD per any
+     * @param any l'any del llibre
+     * @param outData  la resposta al client i un JSONArray en format string
+     */
+    private static void selectBooksByYear(int any, PrintWriter outData) {
 
         try {
             DAOBook daoBook = new DAOBookImpl();

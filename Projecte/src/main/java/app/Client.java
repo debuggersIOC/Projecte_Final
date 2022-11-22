@@ -35,7 +35,7 @@ public class Client {
             System.out.println(inData.nextLine());
             String m = sc.next();
             switch (m) {
-                case "login":
+                case "loginUser":
                     outData.println(m);
                     System.out.println("Enviant petició...");
                     outData.println("{\"usuari\": \"Pedro\", \"password\":\"1234\"}");
@@ -58,7 +58,7 @@ public class Client {
                         System.out.println("Informació enviada");
                     }
                     break;
-                case "register":
+                case "registerUser":
                     System.out.println("Es vol registrar");
                     outData.println("register");
 
