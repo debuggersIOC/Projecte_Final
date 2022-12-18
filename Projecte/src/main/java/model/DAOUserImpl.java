@@ -30,17 +30,25 @@ public class DAOUserImpl extends ConnectionDB implements DAOUser {
     public User select(String user, String password) throws Exception {
         try {
             this.connectDB();
-            PreparedStatement st = this.connection.prepareStatement("SELECT id, usuari, contrasenya, rol FROM usuaris.usuaris WHERE usuari = ? AND contrasenya = ?");
+            PreparedStatement st = this.connection.prepareStatement("SELECT id, usuari, contrasenya, rol, valoracio, nom, cognoms, email, telefon, direccio, poblacio, codi_postal FROM usuaris.usuaris WHERE usuari = ? AND contrasenya = ?");
             st.setString(1, user);
             st.setString(2, password);
             ResultSet rs = st.executeQuery();
             User u = new User();
             while (rs.next()){
 
-                u.setId(rs.getString("id"));
-                u.setUsuari(rs.getString("usuari"));
-                u.setPassword(rs.getString("contrasenya"));
-                u.setType(rs.getString("rol"));    
+            u.setId(rs.getString("id"));
+            u.setUsuari(rs.getString("usuari"));
+            u.setPassword(rs.getString("contrasenya"));
+            u.setType(rs.getString("rol"));
+            u.setValoracio(rs.getFloat("valoracio"));
+            u.setNom(rs.getString("nom"));
+            u.setCognoms(rs.getString("cognoms"));
+            u.setEmail(rs.getString("email"));
+            u.setTelefon(rs.getString("telefon"));
+            u.setDireccio(rs.getString("direccio"));
+            u.setPoblacio(rs.getString("poblacio"));
+            u.setCodiPostal(rs.getInt("codi_postal"));   
             }
             return u;
         } catch (Exception e) {
@@ -58,11 +66,19 @@ public class DAOUserImpl extends ConnectionDB implements DAOUser {
     public void register(User u) throws Exception {
         try {
             this.connectDB();
-            PreparedStatement st = this.connection.prepareStatement("INSERT INTO usuaris.usuaris (id, usuari, contrasenya, rol) VALUES(?,?,?,?)");
+            PreparedStatement st = this.connection.prepareStatement("INSERT INTO usuaris.usuaris (id, usuari, contrasenya, rol, valoracio, nom, cognoms, email, telefon, direccio, poblacio, codi_postal) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
             st.setString(1, u.getId());
             st.setString(2, u.getUsuari());
             st.setString(3, u.getPassword());
             st.setString(4, u.getType());
+            st.setFloat(5, u.getValoracio());
+            st.setString(6, u.getNom());
+            st.setString(7, u.getCognoms());
+            st.setString(8, u.getEmail());
+            st.setString(9, u.getTelefon());
+            st.setString(10, u.getDireccio());
+            st.setString(11, u.getPoblacio());
+            st.setInt(12, u.getCodiPostal());
             st.executeUpdate();
         } catch (Exception e) {
             System.out.println("Ja existeix un usuari igual");
@@ -79,7 +95,7 @@ public class DAOUserImpl extends ConnectionDB implements DAOUser {
     public void update(User u) throws Exception {
          try {
             this.connectDB();
-            PreparedStatement st = this.connection.prepareStatement("UPDATE usuaris.usuaris SET usuari = ?, contrasenya = ?, rol = ?, valoracio = ?, nom = ?, cognoms = ?, email = ?,telefon = ?,  direccio = ?, poblacio = ?, codiPostal = ? WHERE id = ?");
+            PreparedStatement st = this.connection.prepareStatement("UPDATE usuaris.usuaris SET usuari = ?, contrasenya = ?, rol = ?, valoracio = ?, nom = ?, cognoms = ?, email = ?, telefon = ?,  direccio = ?, poblacio = ?, codi_postal = ? WHERE id = ?");
             st.setString(1, u.getUsuari());
             st.setString(2, u.getPassword());
             st.setString(3, u.getType());
@@ -129,7 +145,6 @@ public class DAOUserImpl extends ConnectionDB implements DAOUser {
     public User selectUsers(ResultSet rs) throws Exception {
         try {
             User u = new User();
-            
             u.setId(rs.getString("id"));
             u.setUsuari(rs.getString("usuari"));
             u.setPassword(rs.getString("contrasenya"));

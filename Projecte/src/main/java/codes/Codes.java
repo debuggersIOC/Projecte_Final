@@ -11,7 +11,7 @@ package codes;
  */
 public class Codes {
 
-    //Classe Book
+    //Classe User
     public static final String LOG_USER_ACCEPT = "1_1";
     public static final String LOG_USER_DENIED = "1_2";
     public static final String REGISTER_USER_ACCEPT = "2_1";
@@ -31,7 +31,7 @@ public class Codes {
     public static final String SELECT_USER_ASSESTMENT_ACCEPT = "9_1";
     public static final String SELECT_USER_ASSESMENT_DENIED = "9_2";
 
-//Classe llibre
+//Classe Book
     public static final String REGISTER_BOOK_ACCEPT = "10_1";
     public static final String REGISTER_BOOK_DENIED = "10_2";
     public static final String MOD_BOOK_ACCEPT = "11_1";

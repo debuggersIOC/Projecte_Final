@@ -9,7 +9,11 @@ import interfaces.DAOBook;
 import interfaces.DAOUser;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import model.DAOUserImpl;
@@ -54,7 +58,8 @@ public class ClientHandler extends Thread {
              * Depenent la petició que entri del client es farà una operació.
              *
              * @param request llegeix la petició del servidor
-             * @throws AssertionError() en cas de que no s'envii cap petició correcte
+             * @throws AssertionError() en cas de que no s'envii cap petició
+             * correcte
              */
 
             outData.println("Benvingut al servidor: ");
@@ -138,7 +143,7 @@ public class ClientHandler extends Thread {
                         System.out.println("Es vol donar d'alta un llibre");
                         try {
                             String jsonObject = inData.nextLine();
-                            insertBook("{\"id\": \"7897\", \"usuari\": \"Gerard\", \"password\":\"1234\", \"type\":\"client\"}", outData);
+                            insertBook(jsonObject, outData);
                         } catch (Exception e) {
                             outData.println("10_2");
                         }
@@ -216,16 +221,16 @@ public class ClientHandler extends Thread {
                         break;
                     case "logoutUser":
                         try {
-                            System.out.println("Un usuari es vol desconnectar");
-                            String userToLogout = inData.nextLine();
-                            server.logoutUser(userToLogout);
-                            outData.print("3_1");
-                        } catch (Exception e) {
-                            outData.println("3_2");
-                        } finally {
-                            client.close();
-                        }
-                        break;
+                        System.out.println("Un usuari es vol desconnectar");
+                        String userToLogout = inData.nextLine();
+                        server.logoutUser(userToLogout);
+                        outData.print("3_1");
+                    } catch (Exception e) {
+                        outData.println("3_2");
+                    } finally {
+                        client.close();
+                    }
+                    break;
                     default:
                         System.out.println("No s'ha enviat una petició correcte'");
                         throw new AssertionError();
@@ -237,10 +242,8 @@ public class ClientHandler extends Thread {
             outData.close();
         }
     }
-    
-    
+
     //Metodes per als usuaris
-    
     /**
      * S'inicia una petició per tal de fer un login a l'aplicació
      *
@@ -254,7 +257,7 @@ public class ClientHandler extends Thread {
 
         DAOUser daoUser = new DAOUserImpl();
         JSONObject jsonUser = new JSONObject(user);
-        User u = daoUser.select(jsonUser.getString("usuari"), jsonUser.getString("password"));
+        User u = daoUser.select(jsonUser.getString("usuari"), hexConversion(getSHA(jsonUser.getString("password"))));
         if (u.getUsuari() == null) {
             dataOut.println("1_2");
         } else {
@@ -262,7 +265,7 @@ public class ClientHandler extends Thread {
         }
         return u;
     }
-    
+
     /**
      * Es registra un nou usuari a la BBDD
      *
@@ -281,8 +284,15 @@ public class ClientHandler extends Thread {
             User p = new User();
             p.setId(jsonUser.getString("id"));
             p.setUsuari(jsonUser.getString("usuari"));
-            p.setPassword(jsonUser.getString("password"));
+            p.setPassword(hexConversion(getSHA(jsonUser.getString("password"))));
             p.setType(jsonUser.getString("type"));
+            p.setValoracio(jsonUser.getFloat("valoracio"));
+            p.setNom(jsonUser.getString("nom"));
+            p.setCognoms(jsonUser.getString("cognoms"));
+            p.setEmail(jsonUser.getString("email"));
+            p.setTelefon(jsonUser.getString("telefon"));
+            p.setDireccio(jsonUser.getString("direccio"));
+            p.setCodiPostal(jsonUser.getInt("codiPostal"));
 
             daoUser.register(p);
 
@@ -449,22 +459,22 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     //Metodes per als llibres
-    
     /**
      * Insereix un llibre a la BBDD
+     *
      * @param stringBook un string JSON que conté l'objecte del llibre
      * @param outData la resposta al client
      */
-    private static void insertBook(String stringBook, PrintWriter outData){
-        
+    private static void insertBook(String stringBook, PrintWriter outData) {
+
         try {
             DAOBook daoBook = new DAOBookImpl();
             JSONObject jsonBook = new JSONObject(stringBook);
 
             Book b = new Book();
-            
+
             b.setId(jsonBook.getInt("id"));
             b.setTitol(jsonBook.getString("titol"));
             b.setAutor(jsonBook.getString("autor"));
@@ -473,7 +483,6 @@ public class ClientHandler extends Thread {
             b.setGenere(jsonBook.getString("genere"));
             b.setEditorial(jsonBook.getString("editorial"));
             b.setDisponibilitat(jsonBook.getString("disponibilitat"));
-            
 
             daoBook.insert(b);
 
@@ -483,20 +492,21 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Modifica un llibre a la BBDD
+     *
      * @param stringBook un string JSON que conté l'objecte del llibre
      * @param outData la resposta al client
      */
-    private static void updateBook(String stringBook, PrintWriter outData){
-        
+    private static void updateBook(String stringBook, PrintWriter outData) {
+
         try {
             DAOBook daoBook = new DAOBookImpl();
             JSONObject jsonBook = new JSONObject(stringBook);
 
             Book b = new Book();
-            
+
             b.setId(jsonBook.getInt("id"));
             b.setTitol(jsonBook.getString("titol"));
             b.setAutor(jsonBook.getString("autor"));
@@ -505,7 +515,6 @@ public class ClientHandler extends Thread {
             b.setGenere(jsonBook.getString("genere"));
             b.setEditorial(jsonBook.getString("editorial"));
             b.setDisponibilitat(jsonBook.getString("disponibilitat"));
-            
 
             daoBook.update(b);
 
@@ -515,20 +524,21 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Elimina un llibre a la BBDD
+     *
      * @param stringBook un string JSON que conté l'objecte del llibre
      * @param outData la resposta al client
      */
-    private static void deleteBook(String stringBook, PrintWriter outData){
-        
+    private static void deleteBook(String stringBook, PrintWriter outData) {
+
         try {
             DAOBook daoBook = new DAOBookImpl();
             JSONObject jsonBook = new JSONObject(stringBook);
 
             Book b = new Book();
-            
+
             b.setId(jsonBook.getInt("id"));
             b.setTitol(jsonBook.getString("titol"));
             b.setAutor(jsonBook.getString("autor"));
@@ -537,7 +547,6 @@ public class ClientHandler extends Thread {
             b.setGenere(jsonBook.getString("genere"));
             b.setEditorial(jsonBook.getString("editorial"));
             b.setDisponibilitat(jsonBook.getString("disponibilitat"));
-            
 
             daoBook.delete(b);
 
@@ -547,9 +556,10 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Selecciona tots els llibres de la BBDD
+     *
      * @param outData la reposta al client i un JSONArray en format string
      */
     private static void selectAllBooks(PrintWriter outData) {
@@ -566,9 +576,10 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Selecciona tots els llibres per titol de la BBDD
+     *
      * @param titol el titol del llibre
      * @param outData la reposta al client i un JSONArray en format string
      */
@@ -586,11 +597,12 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Selecciona tots els llibres de la BBDD per autor
+     *
      * @param autor el nom de l'autor
-     * @param outData  la resposta al client i un JSONArray en format string
+     * @param outData la resposta al client i un JSONArray en format string
      */
     private static void selectBooksByAuthor(String autor, PrintWriter outData) {
 
@@ -606,11 +618,12 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Selecciona tots els llibres de la BBDD per ISBN
+     *
      * @param ISBN codi ISBN
-     * @param outData  la resposta al client i un JSONArray en format string
+     * @param outData la resposta al client i un JSONArray en format string
      */
     private static void selectBooksByISBN(String ISBN, PrintWriter outData) {
 
@@ -626,11 +639,12 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Selecciona tots els llibres de la BBDD per genere
+     *
      * @param genere el tipus de genere
-     * @param outData  la resposta al client i un JSONArray en format string
+     * @param outData la resposta al client i un JSONArray en format string
      */
     private static void selectBooksByGenere(String genere, PrintWriter outData) {
 
@@ -646,11 +660,12 @@ public class ClientHandler extends Thread {
             e.getMessage();
         }
     }
-    
+
     /**
      * Selecciona tots els llibres de la BBDD per any
+     *
      * @param any l'any del llibre
-     * @param outData  la resposta al client i un JSONArray en format string
+     * @param outData la resposta al client i un JSONArray en format string
      */
     private static void selectBooksByYear(int any, PrintWriter outData) {
 
@@ -665,5 +680,19 @@ public class ClientHandler extends Thread {
         } catch (Exception e) {
             e.getMessage();
         }
+    }
+
+    public static byte[] getSHA(String string) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        return md.digest(string.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String hexConversion(byte[] hash) {
+        BigInteger number = new BigInteger(1, hash);
+        StringBuilder hexString = new StringBuilder(number.toString(16));
+        while (hexString.length() < 32) {
+            hexString.insert(0, '0');
+        }
+        return hexString.toString();
     }
 }

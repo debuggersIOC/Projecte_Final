@@ -4,10 +4,22 @@
  */
 package app;
 
+import com.sun.net.ssl.KeyManagerFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
 import model.User;
 
 import threads.ClientHandler;
@@ -19,6 +31,9 @@ import threads.ClientHandler;
  * @author Gerard
  */
 public class MainServer {
+    
+    private static String KEY = "C:\\Program Files\\Java\\jre1.8.0_251\\bin\\server_ks";
+    private static String PASS ="123123";
 
     private static HashMap<String, User> loggedUsers = new HashMap<>();
 
@@ -42,18 +57,31 @@ public class MainServer {
         loggedUsers.remove(s);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException, KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException {
 
         try {
             //Es crea el ServerSocket del servidor al port 8888
-            ServerSocket server = new ServerSocket(8888);
+            System.setProperty("javax.net.ssl.trustStore", KEY);
+            SSLContext context = SSLContext.getInstance("TLS");
+            
+            KeyStore ks = KeyStore.getInstance("jceks");
+            ks.load(new FileInputStream(KEY), null);
+            javax.net.ssl.KeyManagerFactory kf = javax.net.ssl.KeyManagerFactory.getInstance("SunX509");
+            kf.init(ks, PASS.toCharArray());
+            
+            context.init(kf.getKeyManagers(), null, null);
+            
+            ServerSocketFactory factory = context.getServerSocketFactory();
+            ServerSocket server = factory.createServerSocket(8888);
+            
+            ((SSLServerSocket) server).setNeedClientAuth(false);
+            
             System.out.println("[SERVIDOR INICIAT]");
             while (true) {
                 //Espera a que es connecti un usuari i llavors accepta la petició              
                 System.out.println("Esperant usuari...");
-                Socket socket = server.accept();
+                SSLSocket socket = (SSLSocket) server.accept();
                 System.out.println("Usuari connectat");
-
                 ClientHandler clientThread = new ClientHandler(socket);
                 clientThread.start();
             }
